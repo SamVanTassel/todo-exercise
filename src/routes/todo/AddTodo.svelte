@@ -8,3 +8,13 @@
   </label>
   <button type="submit">add todo</button>
 </form>
+
+<style>
+  form {
+    display: flex;
+    justify-content: space-between;
+  }
+  input {
+    width: 100%;
+  }
+</style>

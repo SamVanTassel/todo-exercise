@@ -1,38 +1,32 @@
-# sv
+# todo
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
+A straightforward todo app built with SvelteKit in Typescript with Drizzle as an ORM. Deployed via Vercel and using a Postgres database hosted by Neon. AuthJS taking care of user authentication via OAUth and authorization via sessions stored in the database.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
+To run the app, use
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```
+Use this command after making changes to the database schema to push them to the database.
+```bash
+npm run drizzle-push
 ```
 
+Use this command to run a database manager
+```bash
+npm run drizzle-kit
+```
+
+All of these commands can be appended with :local to run the app on a local postgres instance. Instructions for running the postgres instance incoming.
+
+
 ## Building
-
-To create a production version of your app:
-
 ```bash
 npm run build
 ```
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Deploying
+Merge a branch to main and it will automatically deploy with Vercel. 

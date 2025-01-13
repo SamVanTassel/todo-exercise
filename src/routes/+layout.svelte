@@ -6,10 +6,13 @@
   const { routeId } = $derived(data);
 
   const handleSignOut = () => signOut();
+  const appTitle = import.meta.env.VITE_LOCAL === 'TRUE' ?
+    import.meta.env.VITE_APP_TITLE_LOCAL :
+    import.meta.env.VITE_APP_TITLE;
 </script>
 
 <svelte:head>
-  <title>{import.meta.env.VITE_APP_TITLE}</title>
+  <title>{appTitle}</title>
 </svelte:head>
 <nav>
   {#if (routeId !== '/' && !!user)}

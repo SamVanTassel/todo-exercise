@@ -15,25 +15,19 @@
   });
 
   const onToggle = async () => {
-    await fetch('/api/toggle', {
-      method: 'PATCH',
-      body: JSON.stringify({ id: todo.id }),
-    });
+    await fetch(`/api/toggle/${todo.id}`, { method: 'PATCH' });
     invalidate('todos-updated');
   }
 
   const onDelete = () => {
-    fetch('/api/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ id: todo.id }),
-    });
+    fetch(`/api/delete/${todo.id}`, { method: 'DELETE' });
     deleted = true;
   }
 
   const submitEdit = async () => {
-    await fetch('/api/update', {
+    await fetch(`/api/update/${todo.id}`, {
       method: 'PATCH',
-      body: JSON.stringify({ id: todo.id, text }),
+      body: JSON.stringify({ text }),
     });
     invalidate('todos-updated');
   }

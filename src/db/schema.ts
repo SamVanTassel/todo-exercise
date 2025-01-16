@@ -1,7 +1,7 @@
 import { boolean, integer, pgTable, varchar, text, timestamp, primaryKey } from "drizzle-orm/pg-core"
 import { timestamps } from "./columns.helpers";
 
-export const todo = pgTable('todo', {
+export const todos = pgTable('todo', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   text: varchar(),
   completed: boolean().default(false),

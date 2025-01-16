@@ -2,10 +2,17 @@
 	import { slide } from "svelte/transition";
 	import AddTodo from "./AddTodo.svelte";
 	import Todo from "./Todo.svelte";
+	import { LocalTodos } from "$lib/localStorage.svelte";
+	import { setContext } from "svelte";
+
+  const localTodos = new LocalTodos();
+  setContext('localTodos', localTodos);
 
   const { data } = $props();
-  const uncompleted = $derived(data.todos.filter(td => !td.completed));
-  const completed = $derived(data.todos.filter(td => td.completed));
+  let todos = $derived(data.todos || localTodos.getAll());
+
+  const uncompleted = $derived(todos.filter(td => !td.completed));
+  const completed = $derived(todos.filter(td => td.completed));
 </script>
 
 <div class="todopage">

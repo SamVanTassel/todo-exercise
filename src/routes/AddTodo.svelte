@@ -1,20 +1,22 @@
 <script lang="ts">
 	import { enhance } from "$app/forms";
-	import { afterNavigate } from "$app/navigation";
+	import { LocalTodos } from "$lib/localStorage.svelte";
+	import { getContext } from "svelte";
   let text = $state('');
   let disabled = $derived(!text.length);
-  let input: HTMLInputElement|null = null;
-  const focus = () => { if (input) input.focus() };
-  $effect(() => {
-    focus();
-  });
-
-  afterNavigate(({ type }) => {
-    if (type === 'form') focus();
-  });
+  const localTodos = getContext<LocalTodos>('localTodos');
+  const user = getContext('user');
 </script>
 
-<form method="POST" use:enhance>
+<form method="POST" use:enhance={({ formData, cancel, formElement }) => {
+  if (!user) {
+    localTodos.add(formData.get('text') as string);
+    formElement.reset();
+    cancel();
+    return;
+  }
+}}>
+  <!-- svelte-ignore a11y_autofocus -->
   <input
     type="text"
     name="text"
@@ -22,7 +24,7 @@
     spellcheck="false"
     placeholder="what needs done?"
     bind:value={text}
-    bind:this={input}
+    autofocus
   />
   <button type="submit" {disabled}>add todo</button>
 </form>

@@ -3,7 +3,7 @@
 	import AddTodo from "./AddTodo.svelte";
 	import Todo from "./Todo.svelte";
 	import { LocalTodos } from "$lib/LocalTodos.svelte";
-	import { getContext, onMount, setContext } from "svelte";
+	import { getContext, setContext } from "svelte";
 	import { afterNavigate, invalidateAll } from "$app/navigation";
 	import type { User } from "@auth/sveltekit";
 
@@ -19,7 +19,7 @@
 
   let authenticated = $state(false);
   afterNavigate(async () => {
-    if (!!user() && !authenticated) {
+    if (!!user() && !authenticated && localTodos.todos.length) {
       await localTodos.migrateToDatabase();
       invalidateAll();
       authenticated = true;

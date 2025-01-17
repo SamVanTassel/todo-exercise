@@ -1,6 +1,6 @@
 <script lang="ts">
   import { signOut } from "@auth/sveltekit/client";
-	import { getContext, setContext } from "svelte";
+	import { setContext } from "svelte";
 
   const { children, data } = $props();
   const user = $derived(data.session?.user);

@@ -12,7 +12,6 @@ export async function POST({ request, locals }) {
   const localTodos: InferSelectModel<typeof todos>[] = await request.json();
 
   try {
-    // Insert all todos, setting the ownerId to the current user
     await db.insert(todos).values(
       localTodos.map(todo => ({
         ...todo,

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { invalidate } from "$app/navigation";
+	import { LocalTodos } from "$lib/LocalTodos.svelte";
+	import { getContext } from "svelte";
 	import { slide } from "svelte/transition";
 
   const { todo } = $props();
@@ -9,31 +11,37 @@
   let text = $state(todo.text);
   let textInput = $state<HTMLInputElement|null>(null);
 
+  const user = getContext('user');
+  const localTodos = getContext<LocalTodos>('localTodos');
+
   $effect(() => {
     textInput?.select();
     textInput?.addEventListener('blur', () => isEditing = false);
   });
 
   const onToggle = async () => {
-    await fetch('/api/toggle', {
-      method: 'PATCH',
-      body: JSON.stringify({ id: todo.id }),
-    });
+    if (!user) {
+      return localTodos.toggle(todo.id);
+    }
+    await fetch(`/api/toggle/${todo.id}`, { method: 'PATCH' });
     invalidate('todos-updated');
   }
 
   const onDelete = () => {
-    fetch('/api/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ id: todo.id }),
-    });
+    if (!user) {
+      return localTodos.delete(todo.id);
+    }
+    fetch(`/api/delete/${todo.id}`, { method: 'DELETE' });
     deleted = true;
   }
 
   const submitEdit = async () => {
-    await fetch('/api/update', {
+    if (!user) {
+      return localTodos.update(todo.id, text);
+    }
+    await fetch(`/api/update/${todo.id}`, {
       method: 'PATCH',
-      body: JSON.stringify({ id: todo.id, text }),
+      body: JSON.stringify({ text }),
     });
     invalidate('todos-updated');
   }

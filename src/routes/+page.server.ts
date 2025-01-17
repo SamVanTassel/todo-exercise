@@ -1,24 +1,30 @@
 import { db } from "$lib/server/db.server"
 import { and, eq, isNull } from "drizzle-orm";
-import { todo } from "../db/schema";
-import { redirect } from "@sveltejs/kit";
+import { todos } from "../db/schema";
+import { error, redirect } from "@sveltejs/kit";
 
 export const load = async ({ depends, locals }) => {
   const session = await locals.auth();
-  if (!session) return redirect(303, '/signin');
+  if (!session) return;
   const userId = session.user.id;
-
-  const res = await db.select()
-    .from(todo)
-    .where(
-      and(
-        eq(todo.ownerId, userId),
-        isNull(todo.deleted_at)))
-    .orderBy(todo.updated_at);
-  const data = res;
+  
   depends('todos-updated');
-  return {
-    todos: data,
+
+  try {
+    const res = await db.select()
+      .from(todos)
+      .where(
+        and(
+          eq(todos.ownerId, userId),
+          isNull(todos.deleted_at)))
+      .orderBy(todos.updated_at);
+    const data = res;
+    return {
+      todos: data,
+    }
+  } catch (e) {
+    console.error(e);
+    return error(500);
   }
 }
 
@@ -31,10 +37,15 @@ export const actions = {
     const fd = await request.formData();
     const text = fd.get('text') as string;
 
-    await db.insert(todo).values({
-      text,
-      ownerId: userId,
-    })
-    return { success: true };
+    try {
+      await db.insert(todos).values({
+        text,
+        ownerId: userId,
+      });
+      return { success: true };
+    } catch (e) {
+      console.error(e);
+      return error(500);
+    }
   }
 }

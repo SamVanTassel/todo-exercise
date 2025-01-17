@@ -1,14 +1,18 @@
-<script>
+<script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
 	import Google from '$lib/icon/google.svelte';
+
+  async function handleSignIn(provider: string) {
+    await signIn(provider, { callbackUrl: '/' });
+  }
 </script>
 
 <div class="login">
   <h1>sign in</h1>
-  <button onclick={() => signIn('google', { callbackUrl: '/' })}>
+  <button onclick={() => handleSignIn('google')}>
     <Google />sign in with google
   </button>
-  <button onclick={() => signIn('github', { callbackUrl: '/' })}>
+  <button onclick={() => handleSignIn('github')}>
     sign in with github
   </button>
 </div>

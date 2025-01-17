@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { enhance } from "$app/forms";
-	import { LocalTodos } from "$lib/localStorage.svelte";
+	import { LocalTodos } from "$lib/LocalTodos.svelte";
 	import { getContext } from "svelte";
+  import type {User } from "@auth/sveltekit";
+
   let text = $state('');
   let disabled = $derived(!text.length);
   const localTodos = getContext<LocalTodos>('localTodos');
-  const user = getContext('user');
+  const user = getContext('user') as () => ({
+      id: string;
+    } & User);
 </script>
 
 <form method="POST" use:enhance={({ formData, cancel, formElement }) => {
-  if (!user) {
+  if (!user()) {
     localTodos.add(formData.get('text') as string);
     formElement.reset();
     cancel();

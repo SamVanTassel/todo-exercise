@@ -1,14 +1,12 @@
 <script lang="ts">
   import { signOut } from "@auth/sveltekit/client";
-	import { setContext } from "svelte";
+	import { getContext, setContext } from "svelte";
 
   const { children, data } = $props();
   const user = $derived(data.session?.user);
   const { routeId } = $derived(data);
 
-  $effect(() => {
-    setContext('user', user);
-  });
+  setContext('user', () => user);
 
   const handleSignOut = () => signOut();
   const appTitle = import.meta.env.VITE_LOCAL === 'TRUE' ?

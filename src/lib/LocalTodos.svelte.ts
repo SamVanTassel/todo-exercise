@@ -70,6 +70,28 @@ export class LocalTodos {
     this.persist(todos);
   }
 
+  async migrateToDatabase() {
+    const todos = this.getAll();
+    if (!todos.length) return;
+    try {
+      const response = await fetch('/api/migrate', {
+        method: 'POST',
+        body: JSON.stringify(todos)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to migrate todos');
+      }
+
+      // Clear local storage after successful migration
+      localStorage.removeItem(this.key);
+      this.todos = [];
+    } catch (error) {
+      console.error('Error migrating todos:', error);
+      throw error;
+    }
+  }
+
   serialize(value: Todo[]): string {
     return JSON.stringify(value);
   }

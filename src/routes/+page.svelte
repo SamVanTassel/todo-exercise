@@ -2,14 +2,29 @@
 	import { slide } from "svelte/transition";
 	import AddTodo from "./AddTodo.svelte";
 	import Todo from "./Todo.svelte";
-	import { LocalTodos } from "$lib/localStorage.svelte";
-	import { setContext } from "svelte";
+	import { LocalTodos } from "$lib/LocalTodos.svelte";
+	import { getContext, onMount, setContext } from "svelte";
+	import { afterNavigate, invalidateAll } from "$app/navigation";
+	import type { User } from "@auth/sveltekit";
 
   const localTodos = new LocalTodos();
   setContext('localTodos', localTodos);
 
   const { data } = $props();
   let todos = $derived(data.todos || localTodos.getAll());
+
+  const user = getContext('user') as () => ({
+      id: string;
+    } & User);
+
+  let authenticated = $state(false);
+  afterNavigate(async () => {
+    if (!!user() && !authenticated) {
+      await localTodos.migrateToDatabase();
+      invalidateAll();
+      authenticated = true;
+    } else if (!user) authenticated = false;
+  });
 
   const uncompleted = $derived(todos.filter(td => !td.completed));
   const completed = $derived(todos.filter(td => td.completed));

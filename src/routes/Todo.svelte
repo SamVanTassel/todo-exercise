@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidate } from "$app/navigation";
-	import { LocalTodos } from "$lib/localStorage.svelte";
+	import { LocalTodos } from "$lib/LocalTodos.svelte";
 	import { getContext } from "svelte";
 	import { slide } from "svelte/transition";
 

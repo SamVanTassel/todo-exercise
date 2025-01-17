@@ -5,7 +5,7 @@ import { error, redirect } from "@sveltejs/kit";
 
 export const load = async ({ depends, locals }) => {
   const session = await locals.auth();
-  if (!session) return; // redirect(303, '/signin');
+  if (!session) return;
   const userId = session.user.id;
   
   depends('todos-updated');

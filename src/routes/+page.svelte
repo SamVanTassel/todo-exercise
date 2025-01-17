@@ -5,6 +5,7 @@
 	import { LocalTodos } from "$lib/LocalTodos.svelte";
 	import { getContext, setContext } from "svelte";
 	import { afterNavigate, invalidateAll } from "$app/navigation";
+  import { showCompleted } from "$lib/state.svelte";
 	import type { User } from "@auth/sveltekit";
 
   const localTodos = new LocalTodos();
@@ -45,13 +46,15 @@
   {/if}
 
   {#if completed.length}
-  <ul class="completed" transition:slide>
-    {#each completed as todo (todo.id)}
-      <li>
-        <Todo {todo} />
-      </li>
-    {/each}
-  </ul>
+    {#if showCompleted.value}
+      <ul class="completed" transition:slide>
+        {#each completed as todo (todo.id)}
+          <li>
+            <Todo {todo} />
+          </li>
+        {/each}
+      </ul>
+    {/if}
   {/if}
 </div>
 

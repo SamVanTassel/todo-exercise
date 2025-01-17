@@ -1,6 +1,7 @@
 <script lang="ts">
   import { signOut } from "@auth/sveltekit/client";
 	import { setContext } from "svelte";
+  import { showCompleted } from "$lib/state.svelte.js";
 
   const { children, data } = $props();
   const user = $derived(data.session?.user);
@@ -22,16 +23,21 @@
     <a href="/">todo</a>
   {:else if (routeId !== '/signin')}
     <div class="right-content">
-      {#if user}
       <div class="dropdown">
-        <img src={user.image} alt="user" />
-        <div class="dropdown-content hidden">
-          <button onclick={handleSignOut}>sign out</button>
+        {#if user}
+          <img src={user.image} alt="user" />
+        {:else}
+          <img src="/blank.png" alt="no user">
+        {/if}
+          <div class="dropdown-content hidden">
+          {#if user}
+            <button onclick={handleSignOut}>sign out</button>
+          {:else}
+            <a href="/signin" class="right-content">sign in</a>
+          {/if}
+          <button onclick={() => showCompleted.toggle()}>{showCompleted.value ? 'hide' : 'show'} completed tasks</button>
         </div>
       </div>
-      {:else}
-        <a href="/signin" class="right-content">sign in</a>
-      {/if}
     </div>
   {/if}
 </nav>
@@ -53,12 +59,6 @@
 
   nav {
     display: flex;
-  }
-
-  a {
-    padding-right: 1rem;
-    color: black;
-    text-decoration: none;
   }
 
   img {
@@ -84,20 +84,24 @@
   }
 
   .dropdown:hover .dropdown-content {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: right;
   }
 
   .dropdown-content {
     top: 0;
-    right: -1rem;
+    right: 0;
     position: absolute;
     padding-top:2.5rem;
     z-index: 1;
     width: 6rem;
+    text-align: right;
   }
 
-  button {
+  a, button {
     all: unset;
+    display: block;
     border: solid 2px rgb(100, 100, 100);
     border-radius: 4px;
     font-weight: bold;
@@ -105,8 +109,9 @@
     cursor: pointer;
     user-select: none;
     transition: linear 200ms;
+    margin-bottom: .5rem;
   }
-  button:hover {
+  a:hover, button:hover {
     background-color: black;
     color: white;
     transition: linear 200ms;

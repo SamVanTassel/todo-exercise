@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidate } from "$app/navigation";
 	import { LocalTodos } from "$lib/LocalTodos.svelte";
+	import type { User } from "@auth/sveltekit";
 	import { getContext } from "svelte";
 	import { slide } from "svelte/transition";
 
@@ -11,7 +12,10 @@
   let text = $state(todo.text);
   let textInput = $state<HTMLInputElement|null>(null);
 
-  const user = getContext('user');
+  const user = getContext('user') as () => ({
+      id: string;
+    } & User);
+
   const localTodos = getContext<LocalTodos>('localTodos');
 
   $effect(() => {
@@ -20,7 +24,7 @@
   });
 
   const onToggle = async () => {
-    if (!user) {
+    if (!user()) {
       return localTodos.toggle(todo.id);
     }
     await fetch(`/api/toggle/${todo.id}`, { method: 'PATCH' });
@@ -28,7 +32,7 @@
   }
 
   const onDelete = () => {
-    if (!user) {
+    if (!user()) {
       return localTodos.delete(todo.id);
     }
     fetch(`/api/delete/${todo.id}`, { method: 'DELETE' });
@@ -36,7 +40,7 @@
   }
 
   const submitEdit = async () => {
-    if (!user) {
+    if (!user()) {
       return localTodos.update(todo.id, text);
     }
     await fetch(`/api/update/${todo.id}`, {

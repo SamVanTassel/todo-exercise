@@ -82,11 +82,11 @@
       />
     </form>
   {/if}
-  {#if (mouseOverTodo && !todo.completed)}
-    <div class="actions">
+  <div class="actions">
+    {#if (mouseOverTodo && !todo.completed)}
       <button onclick={onDelete}>✖</button>
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -138,6 +138,7 @@
   .actions {
     margin-left: auto;
     position: relative;
+    min-width: 2rem;
     right: 0;
     z-index: 1;
   }
